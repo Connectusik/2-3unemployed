@@ -1,0 +1,7 @@
+{
+  "name": "Remix: BetterMe Drone Tax Dashboard",
+  "description": "Admin dashboard for managing drone delivery orders and calculating composite New York State sales tax.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
