@@ -36,7 +36,7 @@ jobs:
 
       - name: Build static app for Pages
         env:
-          VITE_BASE_PATH: /hackathon2026/
+          VITE_BASE_PATH: /2-3unemployed/
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build:pages
 
