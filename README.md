@@ -3,7 +3,7 @@
 Проєкт поєднує **Vite + React** (UI) та **Express + SQLite** (API + storage) і фокусується на податковому compliance для замовлень, створених вручну або через CSV.
 
 ## Live Demo
-https://two-3unemployed.onrender.com/
+https://two-3unemployed.onrender.com/ (зауважимо, що сайт може обробляти запити, оскільки ми використовуємо безкоштовний хостинг сайту)
 
 ## Що вміє адмінка
 - JWT auth (login + перевірка сесії)
