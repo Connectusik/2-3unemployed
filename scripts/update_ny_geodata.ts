@@ -106,7 +106,6 @@ async function main() {
       }))
   };
 
-  // Simplify aggressively enough for repository size while preserving point-in-polygon usability.
   const counties = simplifyCollection(countiesFiltered, 0.0016);
   const places = simplifyCollection(placesFiltered, 0.0012);
 

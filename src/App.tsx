@@ -193,7 +193,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
       <header className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -250,7 +249,6 @@ export default function App() {
         )}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Left Column: Stats & Form */}
           <div className="lg:col-span-4 space-y-8">
             <section className="grid grid-cols-2 gap-4">
               <div className="card p-4 bg-white">
@@ -293,7 +291,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right Column: Table */}
           <div className="lg:col-span-8 space-y-6">
             <div className="flex items-center justify-between border-b border-black/5 pb-4">
               <div className="flex items-center gap-6">

@@ -18,7 +18,6 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Health check for Nginx/Platform
   app.get("/healthz", (req, res) => res.status(200).send("OK"));
   app.get("/api/healthz", (req, res) => res.status(200).json({ status: "ok" }));
   app.get("/test-alive", (req, res) => res.status(200).send("Server is alive and responding"));
@@ -36,13 +35,11 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Request logging
   app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
   });
 
-  // Auth Middleware (JWT)
   const isAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -59,7 +56,6 @@ async function startServer() {
     }
   };
 
-  // Auth Endpoints
   app.post("/api/auth/login", (req, res) => {
     const { username, password } = req.body;
     const user = db.prepare("SELECT * FROM users WHERE username = ? AND password = ?").get(username, password) as any;
@@ -91,9 +87,6 @@ async function startServer() {
     }
   });
 
-  // API Endpoints (Protected)
-  
-  // POST /orders/import (CSV import)
   app.post("/api/orders/import", isAuthenticated, upload.single("file"), async (req, res) => {
     console.log("Import request received");
     if (!req.file) {
@@ -134,7 +127,6 @@ async function startServer() {
 
         if (!isWithinNY(lat, lon)) {
           const reason = `Outside NY State boundaries (Lat: ${lat}, Lon: ${lon})`;
-          // Try auto-correcting longitude if it's positive
           if (lon > 0 && isWithinNY(lat, -lon)) {
             const correctedLon = -lon;
             const taxData = calculateNYTax(lat, correctedLon, subtotal);
@@ -181,7 +173,6 @@ async function startServer() {
         results.push({ ...record, ...taxData });
       }
 
-      // Clean up uploaded file
       fs.unlinkSync(req.file.path);
       res.json({ 
         message: `Imported ${results.length} orders successfully. ${skippedCount} orders skipped (invalid or outside NY).`, 
@@ -197,7 +188,6 @@ async function startServer() {
     }
   });
 
-  // POST /orders (Manual creation)
   app.post("/api/orders", isAuthenticated, (req, res) => {
     const { latitude, longitude, subtotal, timestamp } = req.body;
     
@@ -239,13 +229,11 @@ async function startServer() {
     res.json({ id: info.lastInsertRowid, ...taxData });
   });
 
-  // GET /orders (List + pagination + filters)
   app.get("/api/orders", isAuthenticated, (req, res) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = (page - 1) * limit;
     
-    // Simple filtering by subtotal range or jurisdiction (optional enhancement)
     const orders = db.prepare(`
       SELECT * FROM orders 
       ORDER BY timestamp DESC 
@@ -269,7 +257,6 @@ async function startServer() {
               try {
                 return JSON.parse(o.special_rates);
               } catch {
-                // fallback below for legacy rows with invalid JSON
               }
             }
             const legacyRate = o.special_rate_total ?? o.special_rate ?? 0;
@@ -291,13 +278,11 @@ async function startServer() {
     });
   });
 
-  // GET /failed-requests
   app.get("/api/failed-requests", isAuthenticated, (req, res) => {
     const failed = db.prepare("SELECT * FROM failed_requests ORDER BY timestamp DESC LIMIT 50").all();
     res.json(failed);
   });
 
-  // DELETE /history (Clear all history and reset counters)
   app.delete("/api/history", isAuthenticated, (req, res) => {
     try {
       db.prepare("DELETE FROM orders").run();
@@ -309,7 +294,6 @@ async function startServer() {
     }
   });
 
-  // Global Error Handler
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error("Unhandled error:", err);
     res.status(err.status || 500).json({
@@ -317,7 +301,6 @@ async function startServer() {
     });
   });
 
-  // Vite middleware for development
   if (process.env.NODE_ENV !== "production" && !fs.existsSync(distPath)) {
     console.log("Starting server in DEVELOPMENT mode (using Vite)");
     const vite = await createViteServer({

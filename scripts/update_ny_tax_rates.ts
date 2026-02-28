@@ -112,7 +112,6 @@ async function extractPdfText(pdfData: Uint8Array): Promise<string> {
 function cleanLabel(label: string): string {
   let value = normalizeWhitespace(label);
 
-  // Remove in-flow references like "*Bronx – see New York City" before the next real token.
   value = value.replace(/(?:\*?[A-Za-z.'()\-\s]+?\s*–\s*see\s*New\s+York\s+City\s*)+/gi, '').trim();
 
   if (!value) {
@@ -238,7 +237,6 @@ function parseTaxTable(text: string) {
     };
   }
 
-  // Ensure county key normalization remains stable for geometry joins.
   if (counties['St Lawrence']) {
     counties['St. Lawrence'] = counties['St Lawrence'];
     delete counties['St Lawrence'];

@@ -2,7 +2,6 @@ import Database from 'better-sqlite3';
 
 const db = new Database('orders.db');
 
-// Initialize core tables.
 db.exec(`
   CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,7 +49,6 @@ addColumnIfMissing('orders', 'special_rate', 'REAL NOT NULL DEFAULT 0');
 addColumnIfMissing('orders', 'special_rates', "TEXT NOT NULL DEFAULT '[]'");
 addColumnIfMissing('orders', 'special_rate_total', 'REAL NOT NULL DEFAULT 0');
 
-// Backfill JSON special rates for old rows if needed.
 db.exec(`
   UPDATE orders
   SET
